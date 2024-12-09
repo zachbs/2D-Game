@@ -50,6 +50,8 @@ public class Player extends Entity{
 		keysObtained = 0;
 		name = "player";
 		getPlayerImage();
+		moves = new String[4];
+		moves[0] = "SwordSlash";
 		
 	}
 	
@@ -83,7 +85,7 @@ public class Player extends Entity{
 	
 		if (keyH.upPressed == true || keyH.downPressed == true || keyH.rightPressed == true || keyH.leftPressed == true) {
 			spriteCounter++;
-			if (spriteCounter > 13) {
+			if (spriteCounter > 11) {
 				if (spriteNum == 1) {
 					spriteNum = 2;
 				} else {
@@ -190,14 +192,14 @@ public class Player extends Entity{
 	
 	public void getPlayerImage() {
 		try {
-			up1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_up_1.png"));
-			up2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_up_2.png"));
-			down1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_down_1.png"));
-			down2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_down_2.png"));
-			right1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_right_1.png"));
-			right2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_right_2.png"));
-			left1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_left_1.png"));
-			left2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/boy_left_2.png"));
+			up1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_up_1.png"));
+			up2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_up_2.png"));
+			down1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_down_1.png"));
+			down2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_down_2.png"));
+			right1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_right_1.png"));
+			right2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_right_2.png"));
+			left1 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_left_1.png"));
+			left2 = ImageIO.read(getClass().getResourceAsStream("/res/Walking sprites/player_left_2.png"));
 			
 		} catch (IOException e) {
 			e.printStackTrace();

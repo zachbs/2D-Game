@@ -9,15 +9,19 @@ public class Animation {
 	public int y;
 	public int defaultX, defaultY, speed;
 	public BufferedImage image[];
-	int width;
-	int height;
+	public int width;
+	public int height;
+	public float damage;
+	public short effect;
+	public float accuracy;
 	
-	public Animation(int x, int y) {
+	public Animation(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.defaultY = y;
 		this.defaultX = x;
-		
+		this.width = width;
+		this.height = height;
 				
 	}
 	

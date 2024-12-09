@@ -51,7 +51,7 @@ public class EntitySetter {
 				counter++;
 				if (counter >= 701) {
 					counter = 0;
-				}
+				} 
 			}
 			if (counter >= 700){
 				String moves[] = {"SwordSlash"};

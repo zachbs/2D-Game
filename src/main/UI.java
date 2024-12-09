@@ -21,7 +21,7 @@ public class UI {
 	String message;
 	String direction;
 	public boolean battleScreenOn;
-	public boolean fightAnimationOn, entityHit, playerTurn, gameOver, displayingHealth;
+	public boolean fightAnimationOn, entityHit, playerTurn, gameOver, displayingHealth, showMoves, counterOn;
 	int x;
 	int y;
 	int xBoxPos[][];
@@ -31,7 +31,7 @@ public class UI {
 	public int entityIndex;
 	String move;
 	int i;
-	BufferedImage escapeButton1, escapeButton2, fightButton1, fightButton2, itemsButton1, itemsButton2, teamButton1, teamButton2;
+	BufferedImage escapeButton1, escapeButton2, fightButton1, fightButton2, itemsButton1, itemsButton2, teamButton1, teamButton2, plainButton1, plainButton2;
 	Animation animation[] = new Animation[10];
 	
 	
@@ -50,6 +50,7 @@ public class UI {
 		counter = 0;
 		move = "";
 		displayingHealth = false;
+		showMoves = false;
 		slideX = 4;
 		slideXP = -4;
 		playerX = 160;
@@ -65,17 +66,21 @@ public class UI {
 		yBoxPos = new int[2][2];
 		entityIndex = 999;
 		gameOver = false;
-			escapeButton1 = returnImage("EscapeButton1");
-			escapeButton2 = returnImage("EscapeButton2");
-			fightButton1 = returnImage("FightButton1");
-			fightButton2 = returnImage("FightButton2");
-			itemsButton1 = returnImage("ItemsButton1");
-			itemsButton2 = returnImage("ItemsButton2");
-			teamButton1 = returnImage("TeamButton1");
-			teamButton2 = returnImage("TeamButton2");
-			// it is 380 because intercept was around there
-			animation[0] = new PlayerSwordSlash(playerX + 28, 380 + (int)((playerX + 28) * slope ));
-			animation[1] = new EntitySwordSlash(entityX - 28,380 + (int)((entityX - 28) * slope ));
+		counterOn = false;
+		escapeButton1 = returnImage("EscapeButton1");
+		escapeButton2 = returnImage("EscapeButton2");
+		fightButton1 = returnImage("FightButton1");
+		fightButton2 = returnImage("FightButton2");
+		itemsButton1 = returnImage("ItemsButton1");
+		itemsButton2 = returnImage("ItemsButton2");
+		teamButton1 = returnImage("TeamButton1");
+		teamButton2 = returnImage("TeamButton2");
+		plainButton1 = returnImage("PlainButton1");
+		plainButton2 = returnImage("PlainButton2");
+		// it is 380 because intercept was around there
+		// even is player odd is entity animation;
+		animation[0] = new PlayerSwordSlash(playerX + 28, 380 + (int)((playerX + 28) * slope ), gp.tileSize * 2, gp.tileSize * 2);
+		animation[1] = new EntitySwordSlash(entityX - 28,380 + (int)((entityX - 28) * slope ), gp.tileSize * 2, gp.tileSize * 2);
 		setBoxPos();
 		
 	}
@@ -168,7 +173,6 @@ public class UI {
 	}
 	
 	public void showBattleScreen(Graphics2D g2) {
-		
 		g2.setColor(Color.green);
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 		g2.setFont(new Font("Arial",Font.PLAIN,40));
@@ -181,22 +185,47 @@ public class UI {
 		}
 		g2.drawImage(gp.player.up1,playerX,playerY,gp.tileSize * 2,gp.tileSize * 2,null);
 		
-		g2.drawImage(escapeButton1, xBoxPos[1][1], yBoxPos[1][1], width, height, null);
-		g2.drawImage(fightButton1, xBoxPos[0][0], yBoxPos[0][0], width, height, null);
-		g2.drawImage(itemsButton1, xBoxPos[1][0], yBoxPos[1][0], width, height, null);
-		g2.drawImage(teamButton1, xBoxPos[0][1], yBoxPos[0][1], width, height, null);
-		displayHealthBar(g2);
+		if (showMoves == false) {
+			g2.drawImage(escapeButton1, xBoxPos[1][1], yBoxPos[1][1], width, height, null);
+			g2.drawImage(fightButton1, xBoxPos[0][0], yBoxPos[0][0], width, height, null);
+			g2.drawImage(itemsButton1, xBoxPos[1][0], yBoxPos[1][0], width, height, null);
+			g2.drawImage(teamButton1, xBoxPos[0][1], yBoxPos[0][1], width, height, null);
+			displayHealthBar(g2);
+			
+			
+			if (x == 0 && y == 0) {
+				g2.drawImage(fightButton2, xBoxPos[0][0], yBoxPos[0][0], width, height, null);
+			} else if (x == 1 && y == 0) {
+				g2.drawImage(teamButton2, xBoxPos[0][1], yBoxPos[0][1], width, height, null);
+			} else if (x == 0 && y == 1) {
+				g2.drawImage(itemsButton2, xBoxPos[1][0], yBoxPos[1][0], width, height, null);
+			} else if (x == 1 && y == 1) {
+				g2.drawImage(escapeButton2, xBoxPos[1][1], yBoxPos[1][1], width, height, null);
+			}
+		} else if (showMoves == true) {
 		
-		
-		if (x == 0 && y == 0) {
-			g2.drawImage(fightButton2, xBoxPos[0][0], yBoxPos[0][0], width, height, null);
-		} else if (x == 1 && y == 0) {
-			g2.drawImage(teamButton2, xBoxPos[0][1], yBoxPos[0][1], width, height, null);
-		} else if (x == 0 && y == 1) {
-			g2.drawImage(itemsButton2, xBoxPos[1][0], yBoxPos[1][0], width, height, null);
-		} else if (x == 1 && y == 1) {
-			g2.drawImage(escapeButton2, xBoxPos[1][1], yBoxPos[1][1], width, height, null);
+			
+			g2.drawImage(plainButton1, xBoxPos[1][1], yBoxPos[1][1], width, height, null);
+			g2.drawImage(plainButton1, xBoxPos[0][0], yBoxPos[0][0], width, height, null);
+			g2.drawImage(plainButton1, xBoxPos[1][0], yBoxPos[1][0], width, height, null);
+			g2.drawImage(plainButton1, xBoxPos[0][1], yBoxPos[0][1], width, height, null);
+			displayHealthBar(g2);
+			
+			
+			if (x == 0 && y == 0) {
+				g2.drawImage(plainButton2, xBoxPos[0][0], yBoxPos[0][0], width, height, null);
+			} else if (x == 1 && y == 0) {
+				g2.drawImage(plainButton2, xBoxPos[0][1], yBoxPos[0][1], width, height, null);
+			} else if (x == 0 && y == 1) {
+				g2.drawImage(plainButton2, xBoxPos[1][0], yBoxPos[1][0], width, height, null);
+			} else if (x == 1 && y == 1) {
+				g2.drawImage(plainButton2, xBoxPos[1][1], yBoxPos[1][1], width, height, null);
+			}
+			g2.setFont(arial_15);
+			g2.setColor(Color.black);
+			g2.drawString(gp.player.moves[0], xBoxPos[0][0] + 40, yBoxPos[0][0] + 40);
 		}
+		
 	}
 	
 	
@@ -218,19 +247,48 @@ public class UI {
 				x--;
 			}
 		}
-		if (gp.keyH.ePressed) {
-				if (x == 0 && y == 0) {
-					fightAnimationOn = true;
-					move = "SwordSlash";
-				} else if (x == 1 && y == 0) {
-					
-				} else if (x == 0 && y == 1) {
-					
-				} else if (x == 1 && y == 1) {
-					gp.gameStatePlay = true;
-					battleScreenOn = false;
-					gp.entSet.entities[entityIndex] = null;
+		if (showMoves == false) {
+			if (gp.keyH.ePressed) {
+					if (x == 0 && y == 0) {
+						showMoves = true;
+						counterOn = true;
+						move = "SwordSlash";
+					} else if (x == 1 && y == 0) {
+						
+					} else if (x == 0 && y == 1) {
+						
+					} else if (x == 1 && y == 1) {
+						gp.gameStatePlay = true;
+						battleScreenOn = false;
+						gp.entSet.entities[entityIndex] = null;
+					}
+			}
+		} else { 
+			if (counterOn) {
+				counter++;
+			}
+			if (counter >= 30 || counterOn == false) {
+				if (gp.keyH.ePressed) {
+					if (x == 0 && y == 0) {
+						fightAnimationOn = true;
+						showMoves = false;
+						move = "SwordSlash";
+					} else if (x == 1 && y == 0) {
+						
+					} else if (x == 0 && y == 1) {
+						
+					} else if (x == 1 && y == 1) {
+						gp.gameStatePlay = true;
+						battleScreenOn = false;
+						gp.entSet.entities[entityIndex] = null;
+					}
 				}
+				counter = 0;
+				counterOn = false;
+			}
+		}
+		if (gp.keyH.escapePressed) {
+			showMoves = false;
 		}
 		
 	}
@@ -252,7 +310,7 @@ public class UI {
 			if (animation[0].x <= entityX - 20 ) {
 				animation[0].x += animation[0].speed;
 				animation[0].y = 380 + ((int)((animation[0].x * slope )));
-				g2.drawImage(animation[0].image[0],animation[0].x,animation[0].y,gp.tileSize * 2 ,gp.tileSize * 2,null);
+				g2.drawImage(animation[0].image[0],animation[0].x,animation[0].y, animation[0].width , animation[0].height,null);
 				
 			} else {
 				entityHit = true;
@@ -270,7 +328,7 @@ public class UI {
 					entityX += slideX;
 				}
 				if (entityHit == false) {
-					gp.entSet.entities[entityIndex].hp -= (gp.player.level * 1.75) + 0.99;
+					gp.entSet.entities[entityIndex].hp -= (gp.player.level * animation[0].damage) + 0.99;
 					//fightAnimationOn = false;
 					displayingHealth = true;
 					resetAnimation();
@@ -293,7 +351,7 @@ public class UI {
 			if (animation[1].x >= playerX + 20 ) {
 				animation[1].x -= animation[0].speed;
 				animation[1].y = 380 + ((int)((animation[1].x * slope )));
-				g2.drawImage(animation[1].image[0],animation[1].x,animation[1].y,gp.tileSize * 2 ,gp.tileSize * 2,null);
+				g2.drawImage(animation[1].image[0],animation[1].x,animation[1].y, animation[1].width , animation[1].height,null);
 				
 			} else {
 				entityHit = true;
@@ -436,6 +494,10 @@ public class UI {
 		g2.fillRect(defaultPlayerX - 96, defaultPlayerY - 55 + gp.tileSize/2, gp.tileSize * 4 - 8, 4);
 		g2.setColor(Color.green);
 		g2.fillRect(defaultPlayerX - 96, defaultPlayerY - 55 + gp.tileSize/2, (int)(gp.player.xp * xpPerBar), 4);
+		
+	}
+	
+	public void showFightButtons(Graphics2D g2, int x, int y) {
 		
 	}
 	
