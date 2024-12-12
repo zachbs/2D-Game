@@ -35,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	Thread gameThread;
 	public KeyHandler keyH = new KeyHandler();
+	public MouseHandler mouseH = new MouseHandler();
 	
 	public Player player = new Player(this);
 	public EntitySetter entSet = new EntitySetter(this,player);
@@ -45,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	TileManager tileManager = new TileManager(this,player);
 	public CollisionChecker cChecker = new CollisionChecker(this);
+	InventoryManager invMan = new InventoryManager(this);
 	public UI ui = new UI(this);
 	
 	// FPS
@@ -57,6 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setBackground(Color.BLACK);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
+		this.addMouseListener(mouseH);
 		this.setFocusable(true);
 		
 		
@@ -118,17 +121,21 @@ public class GamePanel extends JPanel implements Runnable {
 				//System.out.println("WorldX, screenx = " + player.worldX + ", " + player.screenX);
 				drawCount = 0;
 				timer = 0;
-				disablePause = false;
+				
 			}
 		}
 		
 	}
 	
 	public void update() {
-		if (gameStatePlay) {
+		if (gameStatePlay && invMan.inventoryOn == false) {
 			player.update(0);
 			gun.update();
 			entSet.update();
+			
+		} 
+		if (gameStatePlay) {
+			invMan.update();
 		}
 		
 	}
@@ -138,7 +145,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		
 		Graphics2D g2 = (Graphics2D)g;
-		if (gameStatePlay) {
+		if (ui.battleScreenOn != true && ui.gameOver != true) {
 			tileManager.draw(g2);
 			
 			objMan.draw(g2);
@@ -146,13 +153,13 @@ public class GamePanel extends JPanel implements Runnable {
 			entSet.draw(g2);
 			gun.draw(g2);
 			ui.draw(g2);
+			invMan.draw(g2);
 			
 			
-			g2.dispose();
 		} else {
 			ui.draw(g2);
 		}
-		
+		g2.dispose();
 	}
 	
 	public void playMusic(int i) {

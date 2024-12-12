@@ -1,6 +1,5 @@
 package object;
 
-import javax.imageio.ImageIO;
 
 import entity.Entity;
 import entity.Player;
@@ -10,13 +9,8 @@ public class Key extends Object {
 
 	
 	public Key() {
-		try {
-		image = ImageIO.read(getClass().getResourceAsStream("/res/key.png"));
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		image = returnImage("key");
 		name = "key";
-		amount++;
 	}
 	
 	public void interact(Entity entity, GamePanel gp) {
@@ -24,7 +18,7 @@ public class Key extends Object {
 		if (entityId == 0) {
 			Player player = (Player)entity;
 			this.interacted = true;
-			player.keysObtained++;
+			player.inventory.get(0).amount++;
 			gp.playSE(1);
 			gp.ui.showMessage("Good Job! You recived a key!");
 		}

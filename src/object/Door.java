@@ -23,8 +23,8 @@ public class Door extends Object {
 		int entityId = findId(entity);
 		if (entityId == 0) {
 			Player player = (Player)entity;
-			if (player.keysObtained > 0) {
-				player.keysObtained--;
+			if (player.inventory.get(0).amount > 0) {
+				player.inventory.get(0).amount--;
 				this.interacted = true;
 				gp.playSE(2);
 			} else if (soundCounter == 0){

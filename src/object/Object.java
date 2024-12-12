@@ -3,22 +3,29 @@ package object;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
+
 import entity.Entity;
 import main.GamePanel;
 
 public class Object {
 
 	public boolean collision = false;
-	BufferedImage image;
-	String name;
+	public BufferedImage image;
+	public String name;
 	public boolean interacted = false;
 	public int worldX;
 	public int worldY;
-	static int amount;
+	public int amount = 0;
 	public Rectangle solidArea = new Rectangle(0,0,48,48);
 	public int defaultSolidAreaX = 0;
 	public int defaultSolidAreaY = 0;
 	public int soundCounter = 0;
+	public boolean playerHas;
+	public int invX;
+	public int invY;
+	public int invCol;
+	public int invRow;
 	
 	
 	public int findId(Entity entity ) {
@@ -33,5 +40,14 @@ public class Object {
 		
 	}
 	
+	public BufferedImage returnImage(String str) {
+		BufferedImage image = null;
+		try {
+		image = ImageIO.read(getClass().getResourceAsStream("/res/" + str + ".png"));
+		} catch (Exception e) {
+			
+		}
+		return image;
+	}
 	
 }

@@ -165,7 +165,7 @@ public class UI {
 	}
 	
 	public void showBlackScreen(Graphics2D g2, String text) {
-		g2.setColor(Color.black);
+		g2.setColor(new Color(0,0,0,0.60f));
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 		g2.setFont(new Font("Arial",Font.PLAIN,40));
 		g2.setColor(Color.white);
@@ -278,9 +278,7 @@ public class UI {
 					} else if (x == 0 && y == 1) {
 						
 					} else if (x == 1 && y == 1) {
-						gp.gameStatePlay = true;
-						battleScreenOn = false;
-						gp.entSet.entities[entityIndex] = null;
+						
 					}
 				}
 				counter = 0;
@@ -497,7 +495,7 @@ public class UI {
 		
 	}
 	
-	public void showFightButtons(Graphics2D g2, int x, int y) {
+	public void showInventory(Graphics2D g2, int x, int y) {
 		
 	}
 	

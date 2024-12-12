@@ -1,15 +1,21 @@
 package entity;
 
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.Key;
+import object.Object;
+import object.WoodShield;
+import object.WoodSword;
 
 public class Player extends Entity{
 
@@ -23,9 +29,10 @@ public class Player extends Entity{
 	boolean disableUp = false; 
 	boolean disableDown = false;
 	public int nextLevel;
+	public ArrayList<Object> inventory;
 	
 	
-	public int keysObtained;
+	
 	int soundCounter = 0;
 	
 	
@@ -35,23 +42,25 @@ public class Player extends Entity{
 		this.keyH = gp.keyH;
 		setDefaultValues();
 		this.solidArea = new Rectangle();
-		solidArea.x = 8;
-		solidArea.y = 16;
+		solidArea.x = 7; // was 8 originally
+		solidArea.y = 15; // was 16 originally
 		defaultSolidAreaX = solidArea.x;
 		defaultSolidAreaY = solidArea.y;
-		solidArea.width = 32;
-		solidArea.height = 32;
+		solidArea.width = 30; // both were 32 originally
+		solidArea.height = 30;
 		maxHp = 15;
 		agility = 3;
 		hp = maxHp;
 		level = 1;
 		nextLevel = 30;
-		
-		keysObtained = 0;
+		inventory = new ArrayList<Object>(); 
+		//inventory.add("Wood_Sword");
+		//inventory.add("Wood_Shield");
 		name = "player";
 		getPlayerImage();
 		moves = new String[4];
 		moves[0] = "SwordSlash";
+		loadInventory();
 		
 	}
 	
@@ -239,8 +248,15 @@ public class Player extends Entity{
 			}
 		}
 		g2.drawImage(image, screenX , screenY, gp.tileSize, gp.tileSize, null);
+		//g2.setColor(Color.red);
 		//g2.fillRect(solidArea.x + screenX, solidArea.y + screenY, solidArea.width, solidArea.height);
 
+	}
+	
+	public void loadInventory() {
+		inventory.add(new Key());
+		inventory.add(new WoodSword());
+		inventory.add(new WoodShield());
 	}
 
 	
