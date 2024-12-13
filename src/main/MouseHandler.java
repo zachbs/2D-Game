@@ -5,7 +5,7 @@ import java.awt.event.MouseListener;
 
 public class MouseHandler implements MouseListener{
 
-	boolean mouseClicked;
+	boolean mouseClicked, mouseReleased;
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	
@@ -16,6 +16,7 @@ public class MouseHandler implements MouseListener{
 	public void mousePressed(MouseEvent e) {
 		
 		mouseClicked = true;
+		mouseReleased = false;
 		
 	}
 
@@ -23,6 +24,7 @@ public class MouseHandler implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		
 		mouseClicked = false;
+		mouseReleased = true;
 	}
 
 	@Override

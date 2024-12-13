@@ -15,7 +15,7 @@ import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
 	
-	//Screen Settings
+	//Screen Settings 
 	final int originalTileSize = 16; //16x16
 	final int scale = 3;
 	final public int tileSize = originalTileSize * scale; // 48x48
@@ -33,6 +33,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public Boolean gameStatePlay = true;
 	
 	
+	// Start new game or load old one;
+	public boolean loadGame = false;
+	
 	Thread gameThread;
 	public KeyHandler keyH = new KeyHandler();
 	public MouseHandler mouseH = new MouseHandler();
@@ -41,13 +44,14 @@ public class GamePanel extends JPanel implements Runnable {
 	public EntitySetter entSet = new EntitySetter(this,player);
 	Sound music = new Sound();
 	Sound SE = new Sound();
-	public ObjectManager objMan = new ObjectManager(this,player);
+	public ObjectManager objMan = new ObjectManager(this);
 	Gun gun = new Gun(this);
 	
 	TileManager tileManager = new TileManager(this,player);
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	InventoryManager invMan = new InventoryManager(this);
+	public InventoryManager invMan = new InventoryManager(this);
 	public UI ui = new UI(this);
+	public Saver saver = new Saver(this);
 	
 	// FPS
 	int fps = 60;
@@ -112,9 +116,13 @@ public class GamePanel extends JPanel implements Runnable {
 				repaint();
 				delta--;
 				drawCount++;
+				delta = Math.min(delta, 2);
 				
 			}
 			if (timer >= 1000000000) {
+				if (drawCount > 60) {
+					drawCount = 60;
+				}
 				fpsCount = drawCount;
 				//System.out.println("Fps" + drawCount);
 				//System.out.println(" player (x,y) = (" + player.worldX  + "," + player.worldY + ")" );

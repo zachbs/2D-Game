@@ -1,0 +1,5 @@
+Inventory 2
+Wood Sword 1 0
+Wood Shield 1 1
+Player
+1 15 15 30 0 1104 968 SwordSlash Shield null null 

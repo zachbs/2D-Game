@@ -16,16 +16,16 @@ public class ObjectManager {
 	int[][] objectMap;
 	public int amountObj;
 	
-	public ObjectManager(GamePanel gp, Player player) {
+	public ObjectManager(GamePanel gp) {
 		this.gp = gp;
-		this.player = player;
 		objects = new Object[10];
 		objects[0] = new Key();
 		objects[1] = new Door();
+		objects[2] = new Key();
+		objects[3] = new Door();
 		
 		this.objectMap = new int[20][3];
 		loadMap("/maps/objectWorld01.txt");
-		
 		for (int i = 0; i < amountObj; i++) {
 			int id = this.objectMap[i][2];
 			int worldRow = this.objectMap[i][1];
@@ -39,13 +39,14 @@ public class ObjectManager {
 	public void ObjectSetValues(int worldCol, int worldRow, int id) {
 		objects[id].worldX = worldCol * gp.tileSize;
 		objects[id].worldY = worldRow * gp.tileSize;
+		
 	}
 	
 	public void draw(Graphics2D g2) {
-		
 			
 			
-			for (int i = 0; i < amountObj; i++) {		
+			for (int i = 0; i < amountObj; i++) {	
+				
 				if (objects[i] != null) {
 					int screenX = objects[i].worldX - gp.player.worldX + gp.player.screenX;
 					int screenY = objects[i].worldY - gp.player.worldY + gp.player.screenY;
@@ -57,7 +58,7 @@ public class ObjectManager {
 					
 					g2.drawImage(objects[i].image, screenX, screenY,gp.tileSize, gp.tileSize, null);
 					}
-				}
+				} 
 			}
 			
 		}

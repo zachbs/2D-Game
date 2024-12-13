@@ -1,8 +1,11 @@
 package animation;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
+
+import main.UI;
 
 public class Animation {
 	public int x;
@@ -14,15 +17,18 @@ public class Animation {
 	public float damage;
 	public short effect;
 	public float accuracy;
+	public int counter;
+	public boolean finished;
+	UI ui;
 	
-	public Animation(int x, int y, int width, int height) {
+	public Animation(int x, int y, int width, int height, UI ui) {
 		this.x = x;
 		this.y = y;
 		this.defaultY = y;
 		this.defaultX = x;
 		this.width = width;
 		this.height = height;
-				
+		this.ui = ui;
 	}
 	
 	public BufferedImage returnImage (String text) {
@@ -34,6 +40,10 @@ public class Animation {
 			e.printStackTrace();
 		}
 		return image;
+	}
+	
+	public void animate(Graphics2D g2) {
+		
 	}
 	
 }

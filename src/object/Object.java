@@ -21,11 +21,9 @@ public class Object {
 	public int defaultSolidAreaX = 0;
 	public int defaultSolidAreaY = 0;
 	public int soundCounter = 0;
-	public boolean playerHas;
 	public int invX;
 	public int invY;
-	public int invCol;
-	public int invRow;
+	public int position;
 	
 	
 	public int findId(Entity entity ) {

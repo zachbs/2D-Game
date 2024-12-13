@@ -10,22 +10,24 @@ import javax.imageio.ImageIO;
 import animation.Animation;
 import animation.EntitySwordSlash;
 import animation.PlayerSwordSlash;
+import animation.ShieldAnimation;
+import animation.ShieldBar;
 
 
 
 public class UI {
-	GamePanel gp;
+	public GamePanel gp;
 	Font arial_15;
 	boolean messageOn;
 	int messageTimer;
 	String message;
 	String direction;
 	public boolean battleScreenOn;
-	public boolean fightAnimationOn, entityHit, playerTurn, gameOver, displayingHealth, showMoves, counterOn;
+	public boolean fightAnimationOn, entityHit, playerTurn, gameOver, displayingHealth, showMoves, counterOn, criticalDamage;
 	int x;
 	int y;
-	int xBoxPos[][];
-	int yBoxPos[][];
+	public int xBoxPos[][];
+	public int yBoxPos[][];
 	int playerX, playerY, entityX, entityY, defaultPlayerX, defaultPlayerY, defaultEntityX, defaultEntityY, slideX, slideXP, counter;
 	double slope;
 	public int entityIndex;
@@ -33,6 +35,8 @@ public class UI {
 	int i;
 	BufferedImage escapeButton1, escapeButton2, fightButton1, fightButton2, itemsButton1, itemsButton2, teamButton1, teamButton2, plainButton1, plainButton2;
 	Animation animation[] = new Animation[10];
+	ShieldBar shieldBar;
+	boolean deflect;
 	
 	
 	public UI (GamePanel gp) {
@@ -44,6 +48,8 @@ public class UI {
 		entityHit = false;
 		messageTimer = 0;
 		direction = "up";
+		criticalDamage = false;
+		deflect = false;
 		x = 0;
 		y = 0;
 		i = 0;
@@ -77,12 +83,15 @@ public class UI {
 		teamButton2 = returnImage("TeamButton2");
 		plainButton1 = returnImage("PlainButton1");
 		plainButton2 = returnImage("PlainButton2");
+		
+		
 		// it is 380 because intercept was around there
 		// even is player odd is entity animation;
-		animation[0] = new PlayerSwordSlash(playerX + 28, 380 + (int)((playerX + 28) * slope ), gp.tileSize * 2, gp.tileSize * 2);
-		animation[1] = new EntitySwordSlash(entityX - 28,380 + (int)((entityX - 28) * slope ), gp.tileSize * 2, gp.tileSize * 2);
+		animation[0] = new PlayerSwordSlash(playerX + 28, 380 + (int)((playerX + 28) * slope ), gp.tileSize * 2, gp.tileSize * 2, this);
+		animation[1] = new EntitySwordSlash(entityX - 28,380 + (int)((entityX - 28) * slope ), gp.tileSize * 2, gp.tileSize * 2, this);
+		animation[3] = new ShieldAnimation(playerX, playerY, gp.tileSize * 2, gp.tileSize * 2, this);
 		setBoxPos();
-		
+		shieldBar = new ShieldBar(this);
 	}
 	
 	public BufferedImage returnImage (String text) {
@@ -108,10 +117,16 @@ public class UI {
 			}
 		}
 		if (gp.gameStatePlay == false && battleScreenOn == false && gameOver == false) {
+			if (gp.keyH.ePressed) {
+			gp.saver.saveData();
+			}
 			showBlackScreen(g2, "Paused");
+			g2.setFont(arial_15);
+			g2.drawString("Save? press E",gp.screenWidth/2 - 70, gp.screenHeight/2 + 40);
 		} else if (gp.gameStatePlay == false && battleScreenOn) {
 			if (fightAnimationOn != true && displayingHealth != true) {
 				battleUpdate();
+				
 				if (gp.entSet.entities[entityIndex] != null) {
 					i = (int)(Math.random() * gp.entSet.entities[entityIndex].moveNum);
 				}
@@ -126,18 +141,27 @@ public class UI {
 					}
 				}
 			} else {
+				if (criticalDamage){
+					g2.setFont(arial_15);
+					g2.setColor(Color.white);
+					g2.drawString("Critical Hit", gp.player.screenX, gp.player.screenY);
+				}
 				if (counter < 60) {
 					counter++;
 				} else if (counter >= 60) {
 					counter = 0;
+					criticalDamage = false;
 					displayingHealth = false;
 					checkHealthStatus();
-				}
+				} 
 			}
 		} else if (gp.gameStatePlay == false && battleScreenOn == false && gameOver == true) {
 			showBlackScreen(g2, "GameOver");
+		} else if (gp.gameStatePlay == true && gameOver != true) {
+			shieldBar.moveX = 8;
 		}
 		drawFps(g2);
+		
 		
 	}
 	
@@ -169,7 +193,7 @@ public class UI {
 		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 		g2.setFont(new Font("Arial",Font.PLAIN,40));
 		g2.setColor(Color.white);
-		g2.drawString(text, gp.screenWidth/2 - 70, gp.screenHeight/2 + 20);
+		g2.drawString(text, gp.screenWidth/2 - 75, gp.screenHeight/2 + 15);
 	}
 	
 	public void showBattleScreen(Graphics2D g2) {
@@ -224,6 +248,7 @@ public class UI {
 			g2.setFont(arial_15);
 			g2.setColor(Color.black);
 			g2.drawString(gp.player.moves[0], xBoxPos[0][0] + 40, yBoxPos[0][0] + 40);
+			g2.drawString(gp.player.moves[1], xBoxPos[0][1] + 40, yBoxPos[0][1] + 40);
 		}
 		
 	}
@@ -274,7 +299,9 @@ public class UI {
 						showMoves = false;
 						move = "SwordSlash";
 					} else if (x == 1 && y == 0) {
-						
+						fightAnimationOn = true;
+						showMoves = false;
+						move = "Shield";
 					} else if (x == 0 && y == 1) {
 						
 					} else if (x == 1 && y == 1) {
@@ -326,7 +353,7 @@ public class UI {
 					entityX += slideX;
 				}
 				if (entityHit == false) {
-					gp.entSet.entities[entityIndex].hp -= (gp.player.level * animation[0].damage) + 0.99;
+					gp.entSet.entities[entityIndex].hp -= (gp.player.level * (animation[0].damage + criticalDamage())) + 0.99;
 					//fightAnimationOn = false;
 					displayingHealth = true;
 					resetAnimation();
@@ -368,7 +395,14 @@ public class UI {
 					playerX += slideX;
 				}
 				if (entityHit == false) {
-					gp.player.hp -= (gp.entSet.entities[entityIndex].level * 1.75) + 0.99;
+					if (deflect) {
+						gp.entSet.entities[entityIndex].hp -= (gp.entSet.entities[entityIndex].level * (1.75 + criticalDamage())) + 0.99;
+						gp.player.hp -= (gp.entSet.entities[entityIndex].level * (1.75 + criticalDamage()) * gp.player.defense) + 0.99;
+						deflect = false;
+					} else {
+					gp.player.hp -= (gp.entSet.entities[entityIndex].level * (1.75 + criticalDamage()) * gp.player.defense) + 0.99;
+					}
+					gp.player.defense = 1.0f;
 					fightAnimationOn = false;
 					move = "";
 					playerTurn = true;
@@ -439,7 +473,9 @@ public class UI {
 	public void playerMovePicker(Graphics2D g2) {
 		if (move.compareTo("SwordSlash") == 0 ) {
 			playerSwordSlashAnimation(g2);
-		} 
+		} else if (move.compareTo("Shield") == 0) {
+			playerShieldAnimation(g2);
+		}
 				
 	}
 	
@@ -495,9 +531,54 @@ public class UI {
 		
 	}
 	
-	public void showInventory(Graphics2D g2, int x, int y) {
-		
+	public double criticalDamage() {
+		double multiplier = 0.0;
+		int ran = (int)(Math.random() * 10);
+		if (ran < 1) {
+			multiplier = 0.3;
+			criticalDamage = true;
+			System.out.println("crit");
+		} else {
+			criticalDamage = false;
+		}
+		return multiplier;
 	}
+	
+	public void playerShieldAnimation(Graphics2D g2) {
+		if (fightAnimationOn) {
+			animation[3].animate(g2);
+				if (animation[3].finished == true) {
+					if (shieldBar.swing == true) {
+					shieldBar.draw(g2);
+					shieldBar.update();
+					} else {
+						if (shieldBar.colorPicked.compareTo("green") == 0) {
+							deflect = true;
+							gp.player.defense = 0.20f;
+						} else if (shieldBar.colorPicked.compareTo("yellow") == 0) {
+							gp.player.defense = 0.40f;
+						} else if (shieldBar.colorPicked.compareTo("red") == 0) {
+							gp.player.defense = 0.80f;
+						}
+						animation[3].finished = false;
+						animation[3].counter = 0;
+						
+						displayingHealth = true;
+						move = "";
+						playerTurn = false;
+						shieldBar.swing = true;
+						showBattleScreen(g2);
+					}
+					
+					
+					
+					
+				}
+			}
+		} 
+			
+		
+	
 	
 	
 }

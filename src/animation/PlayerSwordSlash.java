@@ -2,12 +2,14 @@ package animation;
 
 import java.awt.image.BufferedImage;
 
+import main.UI;
+
 public class PlayerSwordSlash extends Animation {
 	
 	
 	
-	public PlayerSwordSlash (int x, int y, int width, int height) {
-		super(x,y, width, height);
+	public PlayerSwordSlash (int x, int y, int width, int height, UI ui) {
+		super(x,y, width, height, ui);
 		image = new BufferedImage[1];
 		image[0] = returnImage("SwordSlash2");
 		this.speed = 9;

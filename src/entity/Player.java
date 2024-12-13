@@ -30,6 +30,7 @@ public class Player extends Entity{
 	boolean disableDown = false;
 	public int nextLevel;
 	public ArrayList<Object> inventory;
+	public float defense;
 	
 	
 	
@@ -60,7 +61,9 @@ public class Player extends Entity{
 		getPlayerImage();
 		moves = new String[4];
 		moves[0] = "SwordSlash";
+		moves[1] = "Shield";
 		loadInventory();
+		defense = 1.0f;
 		
 	}
 	
@@ -254,9 +257,15 @@ public class Player extends Entity{
 	}
 	
 	public void loadInventory() {
-		inventory.add(new Key());
-		inventory.add(new WoodSword());
-		inventory.add(new WoodShield());
+		//inventory.add(new Key());
+		//inventory.add(new Key());
+		WoodSword woodSword = new WoodSword();
+		woodSword.position = 0;
+		WoodShield woodShield = new WoodShield();
+		woodShield.position = 1;
+		inventory.add(woodSword);
+		inventory.add(woodShield);
+		
 	}
 
 	
