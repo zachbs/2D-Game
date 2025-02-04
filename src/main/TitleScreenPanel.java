@@ -64,10 +64,12 @@ public class TitleScreenPanel extends JPanel{
         
         panelX.add(Box.createRigidArea(new Dimension(100,0)));
         panelX2.add(Box.createRigidArea(new Dimension(200,0)));
-        panelX2.add(startButton);
+        panelX2.add(loadButton);
+        
+        panelY.add(startButton);
         panelY.add(panelX2);
         panelY.add(optionButton);
-      //  panelY.add(loadButton);
+       // panelY.add(loadButton);
         panelY.add(Box.createRigidArea(new Dimension(0,20)));
         panelX.add(panelY);
         this.add(panelX, BorderLayout.SOUTH);

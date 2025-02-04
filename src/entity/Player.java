@@ -62,7 +62,6 @@ public class Player extends Entity{
 		moves = new String[4];
 		moves[0] = "SwordSlash";
 		moves[1] = "Shield";
-		loadInventory();
 		defense = 1.0f;
 		
 	}
@@ -81,6 +80,9 @@ public class Player extends Entity{
 		if (xp >= nextLevel) {
 			xp = xp - nextLevel;
 			level++;
+			int oldMaxHp = maxHp;
+			maxHp = 15 + level * 4;
+			hp = (int)(hp * (1 + ((double)maxHp/ oldMaxHp)));
 		}
 		
 		if (keyH.upPressed == true && disableUp != true) {
@@ -257,15 +259,12 @@ public class Player extends Entity{
 	}
 	
 	public void loadInventory() {
-		//inventory.add(new Key());
-		//inventory.add(new Key());
 		WoodSword woodSword = new WoodSword();
 		woodSword.position = 0;
 		WoodShield woodShield = new WoodShield();
 		woodShield.position = 1;
 		inventory.add(woodSword);
 		inventory.add(woodShield);
-		
 	}
 
 	

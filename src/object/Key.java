@@ -6,7 +6,7 @@ import entity.Player;
 import main.GamePanel;
 
 public class Key extends Object {
-	static int indexInInventory = -1;
+	public static int indexInInventory = -1;
 	
 	public Key() {
 		image = returnImage("key");

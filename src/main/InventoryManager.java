@@ -60,7 +60,6 @@ BufferedImage images[];
 		boxId2 = -1;
 		mouseX2 = 0;
 		mouseY2 = 0;
-		setUpImages();
 		setBlocks();
 		
 	}
@@ -235,6 +234,7 @@ BufferedImage images[];
 		return image;
 	}
 	public void setUpImages() {
+			
 		int x = 184;
 		int y = 60;
 		int count = 0;
@@ -243,6 +243,7 @@ BufferedImage images[];
 			//System.out.println(gp.player.inventory.size());
 			Object obj = i.next();
 			if (obj.amount > 0) {
+				System.out.println("1    " + obj.position);
 				obj.invX = x;
 				obj.invY = y;
 				//System.out.println(obj.invX + " " + obj.invY + " " + obj.name);
@@ -255,7 +256,7 @@ BufferedImage images[];
 					count = 0;
 				}
 			}
-			
+				
 		}
 		
 	}

@@ -52,7 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public InventoryManager invMan = new InventoryManager(this);
 	public UI ui = new UI(this);
 	public Saver saver = new Saver(this);
-	
+	Loader loader = new Loader(this);
 	// FPS
 	int fps = 60;
 	
@@ -77,6 +77,13 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void setUpGame() {
 		this.playMusic(0);
+		if (loadGame == true) {
+			loader.loadGame();
+			
+		} else {
+			invMan.setUpImages();
+			player.loadInventory();
+		}
 	}
 	
 	@Override

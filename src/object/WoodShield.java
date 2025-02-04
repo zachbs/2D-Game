@@ -5,7 +5,7 @@ public class WoodShield extends Object {
 	
 	public WoodShield() {
 		image = returnImage("shield_wood");
-		name = "Wood Shield";
+		name = "Wood_Shield";
 		amount = 1;
 	}
 

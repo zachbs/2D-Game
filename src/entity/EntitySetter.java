@@ -23,7 +23,7 @@ public class EntitySetter {
 		entities = new Entity[25];
 		entities[0] = player;
 		entities[1] = new MON_Slime(gp);
-		entities[1].setStats(25 * gp.tileSize, 21 * gp.tileSize, 1, moves);
+		entities[1].setStats(25 * gp.tileSize, 21 * gp.tileSize, 2, moves);
 		
 		
 		entities[2] = new MON_Slime(gp);

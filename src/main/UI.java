@@ -22,20 +22,25 @@ public class UI {
 	int messageTimer;
 	String message;
 	String direction;
+	// boolean for when you are in the battle state
 	public boolean battleScreenOn;
-	public boolean fightAnimationOn, entityHit, playerTurn, gameOver, displayingHealth, showMoves, counterOn, criticalDamage;
+	// fightAnimationOn when a move is being animated
+	// displayingHealth when the game pauses a little to display health after each move
+	public boolean fightAnimationOn, entityHit, playerTurn, gameOver, displayingHealth, showMoves, counterOn, criticalDamage, escapeOn, testMoveOrder;
 	int x;
 	int y;
 	public int xBoxPos[][];
 	public int yBoxPos[][];
-	int playerX, playerY, entityX, entityY, defaultPlayerX, defaultPlayerY, defaultEntityX, defaultEntityY, slideX, slideXP, counter;
+	int playerX, playerY, entityX, entityY, defaultPlayerX, defaultPlayerY, defaultEntityX, defaultEntityY, slideX, slideXP, counter, escapeTimer, moveCounter;
+	// slope between player and entity
 	double slope;
+	// value of entity in the array in entitySetter 
 	public int entityIndex;
-	String move;
+	String move, playerMove;
 	int i;
 	BufferedImage escapeButton1, escapeButton2, fightButton1, fightButton2, itemsButton1, itemsButton2, teamButton1, teamButton2, plainButton1, plainButton2;
 	Animation animation[] = new Animation[10];
-	ShieldBar shieldBar;
+	ShieldBar shieldBar, shiledBarEntity;
 	boolean deflect;
 	
 	
@@ -50,11 +55,15 @@ public class UI {
 		direction = "up";
 		criticalDamage = false;
 		deflect = false;
+		playerTurn = true;
+		testMoveOrder = true;
 		x = 0;
 		y = 0;
 		i = 0;
 		counter = 0;
+		moveCounter = 0;
 		move = "";
+		playerMove = "";
 		displayingHealth = false;
 		showMoves = false;
 		slideX = 4;
@@ -73,6 +82,8 @@ public class UI {
 		entityIndex = 999;
 		gameOver = false;
 		counterOn = false;
+		escapeOn = false;
+		escapeTimer = 0;
 		escapeButton1 = returnImage("EscapeButton1");
 		escapeButton2 = returnImage("EscapeButton2");
 		fightButton1 = returnImage("FightButton1");
@@ -85,13 +96,17 @@ public class UI {
 		plainButton2 = returnImage("PlainButton2");
 		
 		
+		
 		// it is 380 because intercept was around there
 		// even is player odd is entity animation;
 		animation[0] = new PlayerSwordSlash(playerX + 28, 380 + (int)((playerX + 28) * slope ), gp.tileSize * 2, gp.tileSize * 2, this);
 		animation[1] = new EntitySwordSlash(entityX - 28,380 + (int)((entityX - 28) * slope ), gp.tileSize * 2, gp.tileSize * 2, this);
 		animation[3] = new ShieldAnimation(playerX, playerY, gp.tileSize * 2, gp.tileSize * 2, this);
+		animation[4] = new ShieldAnimation(entityX, entityY, gp.tileSize * 2, gp.tileSize * 2, this);
 		setBoxPos();
 		shieldBar = new ShieldBar(this);
+		shiledBarEntity = new ShieldBar(this);
+		
 	}
 	
 	public BufferedImage returnImage (String text) {
@@ -108,6 +123,7 @@ public class UI {
 	
 	public void draw(Graphics2D g2) {
 		
+		// checks and displays a message on a black bar at the bottom of the screen
 		if (messageOn) {
 			messageTimer++;
 			drawDialougeBox(g2, message);
@@ -116,6 +132,7 @@ public class UI {
 				messageTimer = 0;
 			}
 		}
+		// saves data when paused and e is clicked and shows pause screen when escape is clicked
 		if (gp.gameStatePlay == false && battleScreenOn == false && gameOver == false) {
 			if (gp.keyH.ePressed) {
 			gp.saver.saveData();
@@ -123,24 +140,44 @@ public class UI {
 			showBlackScreen(g2, "Paused");
 			g2.setFont(arial_15);
 			g2.drawString("Save? press E",gp.screenWidth/2 - 70, gp.screenHeight/2 + 40);
+			
+			// shows battleScreen 
 		} else if (gp.gameStatePlay == false && battleScreenOn) {
-			if (fightAnimationOn != true && displayingHealth != true) {
+			if (moveCounter == 0 || moveCounter == 2) {
+				if (gp.player.agility >= gp.entSet.entities[entityIndex].agility) {
+					playerTurn = true;
+				} else {
+					playerTurn = false;
+				}
+				moveCounter = 0;
+			}
+			if (fightAnimationOn != true && displayingHealth != true && escapeOn != true) {
 				battleUpdate();
 				
 				if (gp.entSet.entities[entityIndex] != null) {
 					i = (int)(Math.random() * gp.entSet.entities[entityIndex].moveNum);
 				}
 			}
+			// if escapeOn is true then do not enter the battle screen
+			if (gp.gameStatePlay == false) {
 			showBattleScreen(g2);
-			if (displayingHealth != true) {
+			}
+			if (displayingHealth != true && escapeOn != true) {
 				if (fightAnimationOn == true) {
+					if (moveCounter == 0) {
+						if (playerMove.compareTo("Shield") == 0) {
+							playerTurn = true;
+						}
+					}
+					
 					if (playerTurn) {
 						playerMovePicker(g2);
 					} else {
+						System.out.println("working");
 						entityMovePicker(g2,i);
 					}
 				}
-			} else {
+			} else if (escapeOn != true) {
 				if (criticalDamage){
 					g2.setFont(arial_15);
 					g2.setColor(Color.white);
@@ -154,7 +191,7 @@ public class UI {
 					displayingHealth = false;
 					checkHealthStatus();
 				} 
-			}
+			} 
 		} else if (gp.gameStatePlay == false && battleScreenOn == false && gameOver == true) {
 			showBlackScreen(g2, "GameOver");
 		} else if (gp.gameStatePlay == true && gameOver != true) {
@@ -245,10 +282,10 @@ public class UI {
 			} else if (x == 1 && y == 1) {
 				g2.drawImage(plainButton2, xBoxPos[1][1], yBoxPos[1][1], width, height, null);
 			}
-			g2.setFont(arial_15);
+			g2.setFont(new Font("Arial", Font.BOLD, 20));
 			g2.setColor(Color.black);
-			g2.drawString(gp.player.moves[0], xBoxPos[0][0] + 40, yBoxPos[0][0] + 40);
-			g2.drawString(gp.player.moves[1], xBoxPos[0][1] + 40, yBoxPos[0][1] + 40);
+			g2.drawString(gp.player.moves[0], xBoxPos[0][0] + 100, yBoxPos[0][0] + 50);
+			g2.drawString(gp.player.moves[1], xBoxPos[0][1] + 100, yBoxPos[0][1] + 50);
 		}
 		
 	}
@@ -277,15 +314,13 @@ public class UI {
 					if (x == 0 && y == 0) {
 						showMoves = true;
 						counterOn = true;
-						move = "SwordSlash";
 					} else if (x == 1 && y == 0) {
 						
 					} else if (x == 0 && y == 1) {
 						
 					} else if (x == 1 && y == 1) {
-						gp.gameStatePlay = true;
-						battleScreenOn = false;
-						gp.entSet.entities[entityIndex] = null;
+						tryEscape();
+						
 					}
 			}
 		} else { 
@@ -297,11 +332,11 @@ public class UI {
 					if (x == 0 && y == 0) {
 						fightAnimationOn = true;
 						showMoves = false;
-						move = "SwordSlash";
+						playerMove = "SwordSlash";
 					} else if (x == 1 && y == 0) {
 						fightAnimationOn = true;
 						showMoves = false;
-						move = "Shield";
+						playerMove = "Shield";
 					} else if (x == 0 && y == 1) {
 						
 					} else if (x == 1 && y == 1) {
@@ -353,11 +388,17 @@ public class UI {
 					entityX += slideX;
 				}
 				if (entityHit == false) {
+					moveCounter++;
+					if (moveCounter == 2) {
+						fightAnimationOn = false;
+						move = "";
+						playerMove = "";
+						}
 					gp.entSet.entities[entityIndex].hp -= (gp.player.level * (animation[0].damage + criticalDamage())) + 0.99;
 					//fightAnimationOn = false;
 					displayingHealth = true;
 					resetAnimation();
-					move = "";
+					
 					playerTurn = false;
 					showBattleScreen(g2);
 					
@@ -403,10 +444,17 @@ public class UI {
 					gp.player.hp -= (gp.entSet.entities[entityIndex].level * (1.75 + criticalDamage()) * gp.player.defense) + 0.99;
 					}
 					gp.player.defense = 1.0f;
+					moveCounter++;
+					if (moveCounter == 2) {
+						System.out.println(moveCounter);
 					fightAnimationOn = false;
 					move = "";
+					playerMove = "";
+					}
+					
 					playerTurn = true;
 					displayingHealth = true;
+					
 					showBattleScreen(g2);
 					resetAnimation();
 				}
@@ -471,10 +519,12 @@ public class UI {
 	}
 	
 	public void playerMovePicker(Graphics2D g2) {
-		if (move.compareTo("SwordSlash") == 0 ) {
+		if (playerMove.compareTo("SwordSlash") == 0 ) {
 			playerSwordSlashAnimation(g2);
-		} else if (move.compareTo("Shield") == 0) {
+		} else if (playerMove.compareTo("Shield") == 0) {
 			playerShieldAnimation(g2);
+		} else {
+			System.out.println("error");
 		}
 				
 	}
@@ -562,11 +612,16 @@ public class UI {
 						}
 						animation[3].finished = false;
 						animation[3].counter = 0;
-						
+						moveCounter++;
 						displayingHealth = true;
 						move = "";
 						playerTurn = false;
 						shieldBar.swing = true;
+						if (moveCounter == 2) {
+							fightAnimationOn = false;
+							move = "";
+							playerMove = "";
+						}
 						showBattleScreen(g2);
 					}
 					
@@ -576,9 +631,37 @@ public class UI {
 				}
 			}
 		} 
+	
+	public void entityShieldAnimation(Graphics2D g2) {
+		
+	}
 			
 		
-	
+	public void tryEscape() {
+		escapeOn = false;
+		if (gp.entSet.entities[entityIndex].agility - gp.player.agility > 0 ) {
+			int ran1 = (int) (Math.random() * (gp.entSet.entities[entityIndex].agility - gp.player.agility));
+			int ran2 = (int) (Math.random() * (gp.entSet.entities[entityIndex].agility - gp.player.agility));
+			if (ran2 == ran1) {
+				escapeOn = true;
+			}
+		} else {
+			
+			escapeOn = true;
+		}
+		
+		if (escapeOn == true) {
+			showMessage("You fled the battle");
+			gp.gameStatePlay = true;
+			battleScreenOn = false;
+			gp.entSet.entities[entityIndex] = null;
+			escapeOn = false;
+		} else {
+			fightAnimationOn = true;
+			playerTurn = false;
+		}
+		
+	}
 	
 	
 }

@@ -17,7 +17,7 @@ public class Saver {
 			if (file.createNewFile()) {
 				gp.ui.showMessage("Creating Save File...");
 			} else if (file.exists()) {
-				gp.ui.showMessage("Loaded Save File...");
+				
 			} else {
 				gp.ui.showMessage("Save Error");
 			}
@@ -61,6 +61,24 @@ public class Saver {
 				writer.write("null ");
 			}
 			writer.newLine();
+			
+			writer.write("Objects");
+			int count = 0;
+			for (int i = 0; i < 10; i++) {
+				if (gp.objMan.objects[i] != null) {
+					count++;
+				}
+			}
+			writer.write("Objects " + count );
+			writer.newLine();
+			for (int i = 0; i < 10; i++) {
+				if (gp.objMan.objects[i] != null) {
+					writer.write(i + " ");
+					writer.write(gp.objMan.objects[i].worldX + " ");
+					writer.write(gp.objMan.objects[i].worldY + " ");
+					writer.newLine();
+				}
+			}
 			
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());

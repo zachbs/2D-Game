@@ -1,5 +1,10 @@
-Inventory 2
-Wood Sword 1 0
-Wood Shield 1 1
+Inventory 3
+Wood_Sword 1 0
+Wood_Shield 1 12
+key 1 15
 Player
-1 15 15 30 0 1104 968 SwordSlash Shield null null 
+1 4 15 30 20 1080 1072 SwordSlash Shield null null 
+ObjectsObjects 3
+0 1104 336 
+1 480 528 
+3 480 624 

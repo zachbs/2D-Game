@@ -86,6 +86,25 @@ public class ShieldBar {
 		}
 	}
 	
+	public void changeX(int x) {
+		background.x += x;
+		redSpace1.x += x;
+		yellowSpace1.x += x;
+		redSpace2.x += x;
+		yellowSpace2.x += x;
+		greenSpace.x += x;
+		selecter.x += x;
+	}
+	
+	public void changeY(int x) {
+		background.y += x;
+		redSpace1.y += x;
+		yellowSpace1.y += x;
+		redSpace2.y += x;
+		yellowSpace2.y += x;
+		greenSpace.y += x;
+		selecter.y += x;
+	}
 	
 	
 	

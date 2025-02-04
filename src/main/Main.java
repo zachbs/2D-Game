@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.CardLayout;
+import java.io.File;
 
 import javax.swing.JFrame;
 
@@ -34,6 +35,20 @@ public class Main {
         	gamePanel.startGameThread();
         	
         });
+        
+        titlePanel.loadButton.addActionListener(e -> {
+        	String path = "/Users/zbsmi/CSCI 1301/2d Game/src/maps/save.txt";
+        	File file = new File(path);
+        	if (file.exists()) {
+        	cardLayout.show(mainPanel, "GamePanel"); 
+        	gamePanel.loadGame = true;
+        	gamePanel.requestFocusInWindow();
+        	gamePanel.setUpGame();
+        	gamePanel.startGameThread();
+        	}
+        });
+        
+        
 
         // Add the main panel to the frame
         window.add(mainPanel);

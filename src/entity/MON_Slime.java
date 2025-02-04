@@ -13,7 +13,7 @@ public class MON_Slime extends Entity {
 		maxHp = 10;
 		hp = maxHp;
 		speed = 1;
-		agility = 1;
+		agility = 8;
 		up1 = setImage("/res/Monsters/greenslime_down_1.png");
 		up2 = setImage("/res/Monsters/greenslime_down_2.png");
 		down1 = setImage("/res/Monsters/greenslime_down_1.png");
@@ -57,6 +57,7 @@ public class MON_Slime extends Entity {
 		super.setStats(worldX, worldY, level, moves);
 		moveNum = moves.length;
 		agility = (int)(level * 0.5 + 0.99);
+		//agility = 8;
 		maxHp = (int)(level * 5 + 0.99);
 		hp = maxHp;
 		xp = level * 10;
