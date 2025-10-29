@@ -61,6 +61,20 @@ javac -d bin src/**/*.java
 java -cp bin Main
 ```
 
+## Additional Way to Run  
+
+You can also run the game directly through your **IDE**:
+
+1. Open your IDE (such as **IntelliJ IDEA**, **VS Code**, or **Eclipse**).  
+2. Open the project folder as a Java project.  
+3. Locate the file:  
+   ```bash
+   src/main/Main.java
+   ```
+4. Right-click Main.java and select Run or Run Main (depending on your IDE).
+5. The game window will launch and begin running immediately.
+
+
 ## Future Improvements  
 * **Enhanced Combat:** Add special abilities or elemental attacks.  
 * **Expanded World:** Introduce multiple biomes, towns, and dungeons.  
